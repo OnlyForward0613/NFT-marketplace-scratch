@@ -41,8 +41,9 @@ export default function NFTPage(props) {
       image: meta.image,
       name: meta.name,
       description: meta.description,
+      tokenURI: tokenURI
     };
-    console.log(item);
+    console.log("item: ", item);
     updateData(item);
     updateFetched(true);
     console.log("address", addr);
@@ -102,6 +103,9 @@ export default function NFTPage(props) {
           </div>
           <div>
             TokenId: <span className="text-sm">{data.tokenId}</span>
+          </div>
+          <div>
+            TokenURI: <span className="text-sm">{data.tokenURI}</span>
           </div>
           <div>
             {currAddress != data.owner && currAddress != data.seller ? (
