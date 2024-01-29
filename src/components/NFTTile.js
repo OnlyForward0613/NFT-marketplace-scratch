@@ -21,6 +21,9 @@ function NFTTile (data) {
                 <p className="display-inline">
                     {data.data.description}
                 </p>
+                <p className="display-inline">
+                    {data.data.tokenId}
+                </p>
             </div>
         </div>
         </Link>
