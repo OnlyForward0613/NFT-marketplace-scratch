@@ -4,6 +4,7 @@ import MarketplaceJSON from "../Marketplace.json";
 import axios from "axios";
 import { useState } from "react";
 import { GetIpfsUrlFromPinata } from "../utils";
+import { Spin, Alert } from "antd";
 
 export default function Marketplace() {
   const sampleData = [
@@ -39,7 +40,6 @@ export default function Marketplace() {
     },
   ];
   const [data, updateData] = useState(sampleData);
-
   const [dataFetched, updateFetched] = useState(false);
 
   async function getAllNFTs() {
@@ -83,8 +83,22 @@ export default function Marketplace() {
   }
 
   if (!dataFetched) getAllNFTs();
+  if (dataFetched && !data.length)
+    return (
+      <div style={{ minHeight: "100vh" }}>
+        <Navbar></Navbar>
+        <div className="flex flex-col place-items-center mt-40">
+          <Spin tip="Loading..." size="large">
+            <div className="content" />
+          </Spin>
+          <div className="mt-10 md:text-xl lg:text-3xl font-bold text-white">
+            No items in marketplace
+          </div>
+        </div>
+      </div>
+    );
   return (
-    <div>
+    <div style={{ minHeight: "100vh" }}>
       <Navbar></Navbar>
       <div className="flex flex-col place-items-center mt-20">
         <div className="md:text-xl font-bold text-white">Top NFTs</div>
