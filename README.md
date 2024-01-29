@@ -9,3 +9,7 @@ cd NFT-Marketplace-Tutorial
 npm install
 npm start
 ```
+
+```bash
+You can find this tutorial at https://docs.alchemy.com/docs/how-to-build-an-nft-marketplace-from-scratch
+```
