@@ -16,7 +16,7 @@ contract NFTMarketplace is ERC721URIStorage {
     //owner is the contract address that created the smart contract
     address payable owner;
     //The fee charged by the marketplace to be allowed to list an NFT
-    uint256 listPrice = 0.01 ether;
+    uint256 listPrice = 0.0001 ether;
 
     //The structure to store info about a listed token
     struct ListedToken {
@@ -177,7 +177,19 @@ contract NFTMarketplace is ERC721URIStorage {
         payable(seller).transfer(msg.value);
     }
 
-    //We might add a resell token function in the future
+    /* allows someone to resell a token they have purchased */
+    function resellToken(uint256 tokenId, uint256 price) public payable {
+      require(idToListedToken[tokenId].owner == msg.sender, "Only item owner can perform this operation");
+      require(msg.value == listPrice, "Price must be equal to listing price");
+      idToListedToken[tokenId].currentlyListed = false;
+      idToListedToken[tokenId].price = price;
+      idToListedToken[tokenId].seller = payable(msg.sender);
+      idToListedToken[tokenId].owner = payable(address(this));
+      _itemsSold.decrement();
+
+      _transfer(msg.sender, address(this), tokenId);
+    }
+
     //In that case, tokens won't be listed by default but users can send a request to actually list a token
     //Currently NFTs are listed by default
 }
