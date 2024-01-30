@@ -31,7 +31,7 @@ export default function NFTPage(props) {
     console.log('tokenURI: ', tokenURI)
     let meta = await axios.get(tokenURI);
     meta = meta.data;
-    console.log(listedToken);
+    console.log('metaInfo: ', meta);
 
     let item = {
       price: meta.price,

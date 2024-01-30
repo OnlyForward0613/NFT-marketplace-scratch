@@ -3,12 +3,14 @@ pragma solidity ^0.8.0;
 
 import "hardhat/console.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
+import "@openzeppelin/contracts/utils/Strings.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 
 contract NFTMarketplace is ERC721URIStorage {
 
     using Counters for Counters.Counter;
+    using Strings for uint256;
     //_tokenIds variable has the most recent minted tokenId
     Counters.Counter private _tokenIds;
     //Keeps track of the number of items sold on the marketplace
@@ -60,6 +62,13 @@ contract NFTMarketplace is ERC721URIStorage {
     function getListedTokenForId(uint256 tokenId) public view virtual returns (ListedToken memory) {
         require(_exists(tokenId), "Token id does not exist");
         return idToListedToken[tokenId];
+    }
+
+    function tokenURI(uint256 tokenId) public view virtual override returns (string memory) {
+        require(_exists(tokenId), "Token id does not exist");
+
+        string memory baseURI = _baseURI();
+        return bytes(baseURI).length != 0 ? string(abi.encodePacked(baseURI, tokenId.toString(), ".json")) : '';
     }
 
     function getCurrentToken() public view returns (uint256) {
