@@ -243,7 +243,6 @@ export default function SellNFT() {
               Upload Image (&lt;500 KB)
             </label>
           </div>
-          {fileURL && <img className="rounded mt-4 w-full" src={fileURL} />}
           <br></br>
           <div className="text-red-500 text-center">{message}</div>
           <button
