@@ -61,6 +61,7 @@ export default function Marketplace() {
       transaction.map(async (i) => {
         var tokenURI = await contract.tokenURI(i.tokenId);
         tokenURI = GetIpfsUrlFromPinata(tokenURI);
+        console.log('tokenURI: ', tokenURI);
         let meta = await axios.get(tokenURI);
         meta = meta.data;
 

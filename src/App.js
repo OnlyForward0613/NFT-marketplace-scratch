@@ -5,6 +5,7 @@ import Profile from "./components/Profile";
 import SellNFT from "./components/SellNFT";
 import NFTPage from "./components/NFTpage";
 import Dashboard from "./components/Dashboard";
+import ResellNFT from "./components/ResellNFT.js";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
@@ -12,15 +13,14 @@ function App() {
   return (
     <div className="container">
       <BrowserRouter>
-        <main>
-          <Routes>
-            <Route path="/" element={<Marketplace />} />
-            <Route exact path="/dashboard" element={<Dashboard />} />
-            <Route path="/nftPage" element={<NFTPage />} />
-            <Route path="/profile" element={<Profile />} />
-            <Route path="/sellNFT" element={<SellNFT />} />
-          </Routes>
-        </main>
+        <Routes>
+          <Route path="/" element={<Marketplace />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/sellNFT" element={<SellNFT />} />
+          <Route path="/nftPage/:tokenId" element={<NFTPage />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/resellNFT" element={<ResellNFT />} />
+        </Routes>
       </BrowserRouter>
     </div>
   );

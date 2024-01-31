@@ -64,12 +64,12 @@ contract NFTMarketplace is ERC721URIStorage {
         return idToListedToken[tokenId];
     }
 
-    function tokenURI(uint256 tokenId) public view virtual override returns (string memory) {
-        require(_exists(tokenId), "Token id does not exist");
+    // function tokenURI(uint256 tokenId) public view virtual override returns (string memory) {
+    //     require(_exists(tokenId), "Token id does not exist");
 
-        string memory baseURI = _baseURI();
-        return bytes(baseURI).length != 0 ? string(abi.encodePacked(baseURI, tokenId.toString(), ".json")) : '';
-    }
+    //     string memory baseURI = _baseURI();
+    //     return bytes(baseURI).length != 0 ? string(abi.encodePacked(baseURI, tokenId.toString(), ".json")) : '';
+    // }
 
     function getCurrentToken() public view returns (uint256) {
         return _tokenIds.current();

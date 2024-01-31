@@ -2,8 +2,8 @@
   "_format": "hh-sol-cache-2",
   "files": {
     "E:\\Repository\\RTW3-Week7-NFT-Marketplace\\contracts\\NFTMarketplace.sol": {
-      "lastModificationDate": 1706527616577,
-      "contentHash": "c6a3cd75609b2111722b1a506082a8c3",
+      "lastModificationDate": 1706681658626,
+      "contentHash": "c350adfe57d6d5f65a1fae6c66346c5b",
       "sourceName": "contracts/NFTMarketplace.sol",
       "solcConfig": {
         "version": "0.8.4",
@@ -31,6 +31,7 @@
       "imports": [
         "hardhat/console.sol",
         "@openzeppelin/contracts/utils/Counters.sol",
+        "@openzeppelin/contracts/utils/Strings.sol",
         "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol",
         "@openzeppelin/contracts/token/ERC721/ERC721.sol"
       ],

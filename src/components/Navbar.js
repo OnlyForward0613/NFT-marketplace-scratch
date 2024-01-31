@@ -21,7 +21,7 @@ function Navbar() {
       const provider = new ethers.providers.Web3Provider(window.ethereum);
       const signer = provider.getSigner();
       const addr = await signer.getAddress();
-      console.log('provider: ', addr)
+      console.log('addr: ', addr)
       updateAddress(addr);
     } catch(error) {
       console.log(error);
@@ -39,11 +39,11 @@ function Navbar() {
 
   async function connectWebsite() {
     const chainId = await window.ethereum.request({ method: "eth_chainId" });
-    if (chainId !== "0x5") {
+    if (chainId !== "0xaa36a7") {
       //alert('Incorrect network! Switch your metamask network to Rinkeby');
       await window.ethereum.request({
         method: "wallet_switchEthereumChain",
-        params: [{ chainId: "0x5" }],
+        params: [{ chainId: "0xaa36a7" }],
       });
     }
     await window.ethereum
@@ -52,23 +52,24 @@ function Navbar() {
         updateButton();
         console.log("here");
         getAddress();
-        window.location.replace(location.pathname);
+        // window.location.replace(location.pathname);
       });
   }
 
   useEffect(() => {
     if (window.ethereum == undefined) return;
     let val = window.ethereum.isConnected();
-    if (val) {
-      console.log("here");
-      getAddress();
-      toggleConnect(val);
-      updateButton();
-    }
+    connectWebsite()
+    // if (val) {
+    //   console.log("here");
+    //   getAddress();
+    //   toggleConnect(val);
+    //   updateButton();
+    // }
 
-    window.ethereum.on("accountsChanged", function (accounts) {
-      window.location.replace(location.pathname);
-    });
+    // window.ethereum.on("accountsChanged", function (accounts) {
+    //   window.location.replace(location.pathname);
+    // });
   }, []);
 
   return (

@@ -39,6 +39,7 @@ export default function Profile() {
     const items = await Promise.all(
       transaction.map(async (i) => {
         const tokenURI = await contract.tokenURI(i.tokenId);
+        console.log("tokenURI: ", tokenURI);
         let meta = await axios.get(tokenURI);
         meta = meta.data;
 
@@ -68,7 +69,10 @@ export default function Profile() {
   if (!dataFetched) getNFTData(tokenId);
 
   return (
-    <div className="profileClass overflow-hidden" style={{ minHeight: "100vh" }}>
+    <div
+      className="profileClass overflow-hidden"
+      style={{ minHeight: "100vh" }}
+    >
       <Navbar></Navbar>
       <div className="profileClass">
         <div className="flex text-center flex-col mt-11 md:text-2xl text-white">

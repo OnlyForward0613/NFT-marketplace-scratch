@@ -27,7 +27,7 @@ export default function NFTPage(props) {
     //create an NFT Token
     var tokenURI = await contract.tokenURI(tokenId);
     const listedToken = await contract.getListedTokenForId(tokenId);
-    tokenURI = GetIpfsUrlFromPinata(tokenURI);
+    // tokenURI = GetIpfsUrlFromPinata(tokenURI);
     console.log('tokenURI: ', tokenURI)
     let meta = await axios.get(tokenURI);
     meta = meta.data;
