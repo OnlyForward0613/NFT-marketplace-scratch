@@ -161,7 +161,7 @@ export default function SellNFT() {
 
   return (
     <div className="">
-      <Navbar></Navbar>
+      {/* <Navbar></Navbar> */}
       <div className="flex flex-col place-items-center mt-10" id="nftForm">
         <form className="bg-white shadow-xl rounded px-8 pt-4 pb-8 mb-4">
           <h3 className="text-center font-bold text-purple-500 mb-8">

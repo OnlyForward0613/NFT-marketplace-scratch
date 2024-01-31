@@ -73,7 +73,7 @@ export default function Profile() {
       className="profileClass overflow-hidden"
       style={{ minHeight: "100vh" }}
     >
-      <Navbar></Navbar>
+      {/* <Navbar></Navbar> */}
       <div className="profileClass">
         <div className="flex text-center flex-col mt-11 md:text-2xl text-white">
           <div className="mb-5">

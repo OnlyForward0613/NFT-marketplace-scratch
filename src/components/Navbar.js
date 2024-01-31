@@ -16,14 +16,14 @@ function Navbar() {
   const location = useLocation();
   const [currAddress, updateAddress] = useState("0x");
   async function getAddress() {
-    try{
+    try {
       const ethers = require("ethers");
       const provider = new ethers.providers.Web3Provider(window.ethereum);
       const signer = provider.getSigner();
       const addr = await signer.getAddress();
-      console.log('addr: ', addr)
+      console.log("addr: ", addr);
       updateAddress(addr);
-    } catch(error) {
+    } catch (error) {
       console.log(error);
     }
   }
@@ -59,7 +59,7 @@ function Navbar() {
   useEffect(() => {
     if (window.ethereum == undefined) return;
     let val = window.ethereum.isConnected();
-    connectWebsite()
+    connectWebsite();
     // if (val) {
     //   console.log("here");
     //   getAddress();
@@ -90,8 +90,17 @@ function Navbar() {
               </div>
             </Link>
           </li>
-          <li className="w-2/6">
+          <li className="w-2/5">
             <ul className="lg:flex justify-between font-bold mr-10 text-lg">
+              {location.pathname === "/tokenswap" ? (
+                <li className="border-b-2 hover:pb-0 p-2">
+                  <Link to="/tokenswap">Swap Token</Link>
+                </li>
+              ) : (
+                <li className="hover:border-b-2 hover:pb-0 p-2">
+                  <Link to="/tokenswap">Swap Token</Link>
+                </li>
+              )}
               {location.pathname === "/" ? (
                 <li className="border-b-2 hover:pb-0 p-2">
                   <Link to="/">Marketplace</Link>
