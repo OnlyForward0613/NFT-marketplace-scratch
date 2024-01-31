@@ -142,6 +142,11 @@ function Navbar() {
                   {connected ? "Connected" : "Connect Wallet"}
                 </button>
               </li>
+              <li>
+                <button className="enableEthereumButton bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded text-sm" onClick={""}>
+                  {connected ? "Connected" : "Connect"}
+                </button>
+              </li>
             </ul>
           </li>
         </ul>

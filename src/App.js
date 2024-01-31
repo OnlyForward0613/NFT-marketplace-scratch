@@ -14,7 +14,7 @@ function App() {
   return (
     <div className="container">
       <BrowserRouter>
-      <Navbar></Navbar>
+        <Navbar></Navbar>
         <Routes>
           <Route path="/" element={<Marketplace />} />
           <Route path="/dashboard" element={<Dashboard />} />
