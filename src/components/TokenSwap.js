@@ -1,12 +1,18 @@
 import React, { useEffect, useState } from "react";
-// import Modal from "../atoms/Modal";
 import { Modal } from "antd";
+import qs from "qs";
+import { erc20abi } from "../utils";
+import { BigNumber } from "@0x/utils";
+import Web3 from "web3";
 
 export default function TokenSwap() {
   const [isDisable, setIsDisable] = useState(true);
   const [tokenList, setTokenList] = useState();
   const [tokenFirst, setTokenFirst] = useState("");
+  const [tokenFirstAmount, setTokenFirstAmount] = useState(0);
   const [tokenSecond, setTokenSecond] = useState("");
+  const [tokenSecondAmount, setTokenSecondAmount] = useState(0);
+  const [estimatedGas, setEstimatedGas] = useState(0);
   const [isFirst, setIsFirst] = useState(false);
   const [isSecond, setIsSecond] = useState(false);
   const [visible, setVisible] = useState(false);
@@ -27,10 +33,41 @@ export default function TokenSwap() {
     setTokenList(tokenListJSON.tokens);
   }
 
+  async function getPrice() {
+    if (!tokenFirst || !tokenSecond || !tokenFirstAmount)
+      return console.log(
+        "input token amount",
+        tokenFirst,
+        tokenSecond,
+        tokenFirstAmount
+      );
+    let amount = tokenFirstAmount * 10 * tokenFirst.decimals;
+    console.log("amount: ", amount);
+    const params = {
+      sellToken: tokenFirst.address,
+      buyToken: tokenSecond.address,
+      sellAmount: amount,
+    };
+    const headers = { "0x-api-key": "f317b10b-aafd-4e4b-b2db-3a1845c6bb3d" };
+    const response = await fetch(
+      `https://api.0x.org/swap/v1/price?${qs.stringify(params)}`,
+      { headers }
+    );
+    const swapPriceJSON = await response.json();
+    console.log("Price: ", swapPriceJSON);
+    // Use the returned values to populate the buy Amount and the estimated gas in the UI
+    setTokenSecondAmount(swapPriceJSON.buyAmount / 10 ** tokenSecond.decimals);
+    setEstimatedGas(swapPriceJSON.estimatedGas);
+  }
+
   useEffect(() => {
     connect();
     getTokenList();
   }, []);
+
+  useEffect(() => {
+    getPrice();
+  }, [tokenFirstAmount]);
   function updateButton() {
     const ethereumButton = document.querySelector(".enableSwapButton");
     setIsDisable(false);
@@ -62,6 +99,79 @@ export default function TokenSwap() {
     else {
       console.log("Please install MetaMask");
     }
+  }
+
+  async function getQuote(account) {
+    console.log("Getting Quote");
+
+    if (!tokenFirst || !tokenSecond || !tokenFirstAmount) return;
+    console.log("amount: ", tokenFirst, tokenSecond, tokenFirstAmount);
+    let amount = tokenFirstAmount * 10 ** tokenFirst.decimals;
+    const params = {
+      sellToken: tokenFirst.address,
+      buyToken: tokenSecond.address,
+      sellAmount: amount,
+      // Set takerAddress to account
+      takerAddress: account,
+    };
+
+    const headers = { "0x-api-key": "f317b10b-aafd-4e4b-b2db-3a1845c6bb3d" };
+    // Fetch the swap quote.
+    const response = await fetch(
+      `https://api.0x.org/swap/v1/quote?${qs.stringify(params)}`,
+      { headers }
+    )
+      .then((data) => {
+        console.log("response:", data);
+      })
+      .catch((err) => {
+        console.log("quoteError: ", err);
+      });
+
+    const swapQuoteJSON = await response.json();
+    console.log("QuoteResponse: ", swapQuoteJSON);
+
+    setTokenSecondAmount(swapQuoteJSON.buyAmount / 10 ** tokenSecond.decimals);
+    setEstimatedGas(swapQuoteJSON.estimatedGas);
+
+    return swapQuoteJSON;
+  }
+
+  async function trySwap() {
+    let accounts = await window.ethereum.request({ method: "eth_accounts" });
+    let takerAddress = accounts[0];
+    // Log the the most recently used address in our MetaMask wallet
+    // Pass this as the account param into getQuote() we built out earlier. This will return a JSON object trade order.
+    const swapQuoteJSON = await getQuote(takerAddress);
+
+    // Set up approval amount for the token we want to trade from
+    const fromTokenAddress = tokenSecond.address;
+
+    // In order for us to interact with a ERC20 contract's method's, need to create a web3 object. This web3.eth.Contract object needs a erc20abi which we can get from any erc20 abi as well as the specific token address we are interested in interacting with, in this case, it's the fromTokenAddrss
+    // Read More: https://web3js.readthedocs.io/en/v1.2.11/web3-eth-contract.html#web3-eth-contract
+    const ethers = require("ethers");
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    const signer = provider.getSigner();
+    const web3 = new Web3(Web3.givenProvider);
+
+    const ERC20TokenContract = new web3.eth.Contract(
+      erc20abi,
+      fromTokenAddress
+    );
+    console.log("setup ERC20TokenContract: ", ERC20TokenContract);
+    // The max approval is set here. Using Bignumber to handle large numbers and account for overflow (https://github.com/MikeMcl/bignumber.js/)
+    const maxApproval = new BigNumber(2).pow(256).minus(1);
+    console.log("approval amount: ", maxApproval);
+
+    // Grant the allowance target (the 0x Exchange Proxy) an  allowance to spend our tokens. Note that this is a txn that incurs fees.
+    const tx = await ERC20TokenContract.methods
+      .approve(swapQuoteJSON.allowanceTarget, maxApproval)
+      .send({ from: takerAddress })
+      .then((tx) => {
+        console.log("tx: ", tx);
+      });
+    const receipt = await web3.eth.sendTransaction(swapQuoteJSON);
+    console.log("receipt: ", receipt);
   }
 
   return (
@@ -135,8 +245,10 @@ export default function TokenSwap() {
                     type="text"
                     name="token1"
                     id="token1"
-                    className="mt-1 mx-3 w-[60%] leading-9 text-black focus:ring-blue-500 focus:border-blue-500 shadow-sm border-gray-300 rounded-md"
+                    className="mt-1 p-1 mx-3 w-[60%] leading-9 text-black focus:ring-blue-500 focus:border-blue-500 shadow-sm border-gray-300 rounded-md"
                     placeholder="amount"
+                    onChange={(e) => setTokenFirstAmount(e.target.value)}
+                    value={tokenFirstAmount}
                   />
                 </div>
                 <div className="col-span-6 sm:col-span-3 bg-gray-700 p-5 rounded-lg border-solid border-2 border-gray-500">
@@ -168,19 +280,22 @@ export default function TokenSwap() {
                     type="text"
                     name="token2"
                     id="token2"
-                    className="mt-1 mx-3 w-[60%] leading-9 focus:ring-blue-500 focus:border-blue-500 shadow-sm border-gray-300 rounded-md"
+                    className="mt-1 mx-3 p-1 w-[60%] text-black leading-9 focus:ring-blue-500 focus:border-blue-500 shadow-sm border-gray-300 rounded-md"
                     placeholder="amount"
+                    value={tokenSecondAmount}
+                    readOnly
                   />
                 </div>
               </div>
               <div className="mt-6">
                 <span className="text-lg text-white">
-                  Estimated Gas: <span id="gas_estimate"></span>
+                  Estimated Gas: <span id="gas_estimate">{estimatedGas}</span>
                 </span>
               </div>
               <button
                 disabled={isDisable}
                 className="enableSwapButton cursor-not-allowed mt-6 bg-blue-400 hover:bg-blue-200 text-white font-bold py-2 px-4 rounded block w-full"
+                onClick={() => trySwap()}
               >
                 Swap
               </button>

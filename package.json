@@ -4,6 +4,7 @@
   "private": true,
   "proxy": "http://localhost:3000",
   "dependencies": {
+    "@0x/utils": "^7.0.0",
     "@fortawesome/react-fontawesome": "^0.2.0",
     "@openzeppelin/contracts": "^4.6.0",
     "@testing-library/jest-dom": "^5.16.4",
@@ -12,14 +13,17 @@
     "antd": "^5.13.3",
     "antd-img-crop": "^4.21.0",
     "axios": "^0.27.2",
+    "bignumber": "^1.1.0",
     "fs": "*",
     "path-browserify": "^1.0.1",
+    "qs": "^6.11.2",
     "react": "^18.1.0",
     "react-dom": "^18.1.0",
     "react-router": "^6.3.0",
     "react-router-dom": "^6.3.0",
     "react-scripts": "5.0.1",
     "web-vitals": "^2.1.4",
+    "web3": "^4.4.0",
     "web3modal": "^1.9.7"
   },
   "scripts": {
